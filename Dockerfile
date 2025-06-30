@@ -1,4 +1,4 @@
-# Use a stable Maven + JDK 21 image for building
+# Use Maven + JDK 21 image for building
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 # Set working directory
