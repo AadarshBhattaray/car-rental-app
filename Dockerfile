@@ -1,14 +1,20 @@
-# Use JDK 24 from Eclipse Temurin project
-FROM eclipse-temurin:24-jdk
+# Use Maven + JDK 24 image from official Maven repo
+FROM maven:3.9.6-eclipse-temurin-24 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy all project files
+# Copy project files
 COPY . .
 
-# Build the project using Maven (skip tests for faster build)
+# Build the project
 RUN mvn clean install -DskipTests
 
-# Run the generated JAR file
-CMD ["java", "-jar", "target/car-rental-app-1.0.0.jar"]
+# ---- Runtime stage ----
+FROM eclipse-temurin:24-jdk
+
+WORKDIR /app
+COPY --from=build /app/target/car-rental-app-1.0.0.jar app.jar
+
+# Start the app
+CMD ["java", "-jar", "app.jar"]
